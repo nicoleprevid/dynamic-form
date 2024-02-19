@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
 import Button from '@/app/components/Button';
-import TagButton from '@/app/components/TagButton';
-import InputText from '@/app/components/InputText';
-import { data } from './mock';
 import DragNDrop from '@/app/components/DragNDrop';
-import Image from 'next/image';
 import InputButton from '@/app/components/InputButton';
+import InputText from '@/app/components/InputText';
+import TagButton from '@/app/components/TagButton';
 import TagInput from '@/app/components/TagInput';
+import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
+import { data } from './mock';
 
 type Props = {
   tipo: string;
@@ -39,18 +39,14 @@ export default function AdicionarRecurso() {
     updateFormData("tipo", tipoSelected, false);
   }, []);
 
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | []>(null);
+  const [message, setMessage] = useState("");
+  const [showCard, setShowCard] = useState(false);
 
-  const handleFileSelect = (file: File | null) => {
+  const handleFileSelect = (file: File | []) => {
     setSelectedFile(file);
+    // manda info para formData
   };
-
-
-  // pega a variavel files de dentro do drag and drop
-  const handleFiles = (selectedFiles) => {
-    // Aqui, você pode armazenar os arquivos diretamente no estado do formulário
-   // updateFormData("arquivo",  selectedFiles);
-  }
 
   const handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files && event.target.files[0];
@@ -101,19 +97,19 @@ export default function AdicionarRecurso() {
       }
       else if (campo === "etapasEnsino" && !isTodos) {
 
-      // deleta dependências
-      const dependenciesToRemove = getDependenciesToRemove(valor as string);
-      if (dependenciesToRemove) {
-        updates["series"] = previousData.series.filter((ser) => !dependenciesToRemove[0].includes(ser));
-        updates["componentesCurricular"] = previousData.componentesCurricular.filter((comp) => !dependenciesToRemove[1].includes(comp));
-        updates["categoria"] = !dependenciesToRemove[2];
-      };
-      // deleta 
-      updates[campo] = currentList.filter((item) => item !== valor);
+        // deleta dependências
+        const dependenciesToRemove = getDependenciesToRemove(valor as string);
+        if (dependenciesToRemove) {
+          updates["series"] = previousData.series.filter((ser) => !dependenciesToRemove[0].includes(ser));
+          updates["componentesCurricular"] = previousData.componentesCurricular.filter((comp) => !dependenciesToRemove[1].includes(comp));
+          updates["categoria"] = !dependenciesToRemove[2];
+        };
+        // deleta 
+        updates[campo] = currentList.filter((item) => item !== valor);
       } else {
-      updates[campo] = [currentList, valor as string];
+        updates[campo] = [currentList, valor as string];
       }
-      
+
       // Verifica se é uma lista
       if (Array.isArray(currentList)) {
         // se for repetido e nao vir do botao "selecionar todos" 
@@ -134,7 +130,6 @@ export default function AdicionarRecurso() {
   const renderTagButton = (opcao: string, status: 'selectPrimary' | 'default', campo: string,) => {
     return (
       <TagButton
-        key={opcao}
         text={opcao}
         size="sm"
         status={status}
@@ -145,7 +140,11 @@ export default function AdicionarRecurso() {
     );
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit =()=> {
+    setShowCard(true)
+    setTimeout(() => setShowCard(false), 3000)
+  };
+  const handleSubmit = (e) => {
     e.preventDefault();
   };
 
@@ -247,10 +246,10 @@ export default function AdicionarRecurso() {
 
   return (
     <div className="flex flex-col xl:w-4/5 h-full self-center">
-      <form data-testid = "form-add-resource" className="bg-gray-50 flex flex-col lg:flex-row rounded-lg p-10 w-full gap-5 self-center" onSubmit={handleFormSubmit}>
-        <div data-testid = "left-side-form"  className="flex flex-col gap-5 flex-wrap w-full xl:w-1/2 h-fit">
+      <form data-testid="form-add-resource" className="bg-gray-50 flex flex-col lg:flex-row rounded-lg p-10 w-full gap-5 self-center" onSubmit={handleSubmit}>
+        <div data-testid="left-side-form" className="flex flex-col gap-5 flex-wrap w-full xl:w-1/2 h-fit">
           <div className="flex gap-2 flex-col flex-wrap">
-            <div data-testid = "title-add-resource" className="flex gap-2 flex-row flex-wrap">
+            <div data-testid="title-add-resource" className="flex gap-2 flex-row flex-wrap">
               <Image
                 src="/icons/pencil.svg"
                 alt="Icon Button"
@@ -281,7 +280,7 @@ export default function AdicionarRecurso() {
             onChange={(event) => setFormData({ ...formData, descricao: event.target.value })}
           />
         </div>
-        <div  data-testid = "right-side-form" className="flex flex-col gap-5 flex-wrap w-full xl:w-1/2  h-fit">
+        <div data-testid="right-side-form" className="flex flex-col gap-5 flex-wrap w-full xl:w-1/2  h-fit">
           <div className="flex gap-2 flex-wrap">
             <div className="flex flex-row w-full content-center justify-between">
               <label className="font-bold text-gray-700">Etapa de Ensino</label>
@@ -319,11 +318,30 @@ export default function AdicionarRecurso() {
           <TagInput
             placeholder="Descreva com palavras-chave separando com Enter"
             label="Palavras-Chave"
-            onTagsSelected = {(tags) => setFormData({ ...formData, tags: tags })}
+            onTagsSelected={(tags) => setFormData({ ...formData, tags: tags })}
           />
         </div>
       </form>
       <div className="flex self-end m-2"><Button text="Cadastrar" onClick={handleFormSubmit}></Button></div>
+      {/* Mostra o card se showCard for true */}
+      {showCard && (
+        <div className="absolute top-2/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+          <div className="bg-white rounded-lg shadow-lg p-4">
+            <h2 className="text-xl font-semibold mb-2">Formulário Enviado</h2>
+            <p>tipo: {formData.tipo}</p>
+            <p>nome: {formData.nome}</p>
+            <p>arquivo: {formData.arquivo}</p>
+            <p>descricao: {formData.descricao}</p>
+            <p>etapasEnsino: {formData.etapasEnsino}</p>
+            <p>series: {formData.series}</p>
+            <p>componentesCurricular: {formData.componentesCurricular}</p>
+            <p>categoria: {formData.categoria}</p>
+            <p>thumbnail: {formData.thumbnail}</p>
+            <p>tags: {formData.tags}</p>
+            {/* Adicione formData.tagsmais campos conforme necessário */}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

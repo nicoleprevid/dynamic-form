@@ -12,7 +12,7 @@ Este é um projeto real desenvolvido no Instituto Mackenzie de Ensino para uso i
 
 1. **Clonagem do Repositório:** Clone este repositório para o seu ambiente local usando o comando:
    ```
-   git clone https://github.com/seu-usuario/formulario-dinamico-nextjs.git
+   git clone https://github.com/nicoleprevid/dynamic-form
    ```
 
 2. **Instalação das Dependências:** Navegue até o diretório do projeto e execute o comando abaixo para instalar todas as dependências necessárias:
