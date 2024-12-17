@@ -330,15 +330,11 @@ export default function AdicionarRecurso() {
             <h2 className="text-xl font-semibold mb-2">Formulário Enviado</h2>
             <p>tipo: {formData.tipo}</p>
             <p>nome: {formData.nome}</p>
-            <p>arquivo: {formData.arquivo}</p>
             <p>descricao: {formData.descricao}</p>
             <p>etapasEnsino: {formData.etapasEnsino}</p>
             <p>series: {formData.series}</p>
             <p>componentesCurricular: {formData.componentesCurricular}</p>
-            <p>categoria: {formData.categoria}</p>
-            <p>thumbnail: {formData.thumbnail}</p>
             <p>tags: {formData.tags}</p>
-            {/* Adicione formData.tagsmais campos conforme necessário */}
           </div>
         </div>
       )}
